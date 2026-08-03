@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const connectDB = require("./config/db");
 
 const app = express();
 
@@ -19,6 +20,17 @@ app.get("/api/test", (req, res) => {
   });
 });
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+const startServer = async () => {
+  try {
+    await connectDB();
+
+    app.listen(PORT, () => {
+      console.log(`Server is running on http://localhost:${PORT}`);
+    });
+  } catch (error) {
+    console.error("Failed to start server:", error.message);
+    process.exit(1);          
+  }
+};
+
+startServer();
