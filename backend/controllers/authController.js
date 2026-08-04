@@ -1,11 +1,11 @@
-const User = require("../models/userModel");
+const User = require("../models/User");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
 const signup = async (req, res) => {
     try {
-        const { fullname, email, password } = req.body;
-        if(!fullname || !email || !password) {
+        const { fullName, email, password } = req.body;
+        if(!fullName || !email || !password) {
             return res.status(400).json({ success:false, message: "Please provide all required fields" });
         }
         //Validation
@@ -16,7 +16,7 @@ const signup = async (req, res) => {
         // HASHING PASSWORD AND CREATING USER   
         const hashedPassword = await bcrypt.hash(password, 10);
         const newUser = new User({
-            fullname,
+            fullName,
             email,
             password: hashedPassword
         });
@@ -37,7 +37,7 @@ const signup = async (req, res) => {
             token });
     }
     catch (error) {
-        console.error("Error during signup:", error);
+        console.error(error);
         return res.status(500).json({ success:false, message: "Internal Server Error" });
     }
 } 
