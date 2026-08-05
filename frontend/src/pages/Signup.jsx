@@ -1,6 +1,8 @@
 import { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom"; 
 function Signup() {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
@@ -48,9 +50,10 @@ const handleSubmit = async (e) => {
 
     setSuccess(response.data.message);
 
-    // We will use this token on Day 4
+    // Store JWT
     localStorage.setItem("token", response.data.token);
 
+    // Clear the form
     setFormData({
       fullName: "",
       email: "",
@@ -58,8 +61,8 @@ const handleSubmit = async (e) => {
       confirmPassword: "",
     });
 
-    // Later we will redirect to Login page
-    // navigate("/login");
+    // Redirect to Dashboard
+    navigate("/dashboard");
 
   } catch (err) {
     if (err.response) {
