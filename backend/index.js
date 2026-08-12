@@ -3,6 +3,7 @@ const cors = require("cors");
 require("dotenv").config();
 console.log("MONGO_URI =", process.env.MONGO_URI);
 const authRoutes = require("./routes/authRoutes");
+const uploadRoutes = require("./routes/uploadRoutes");
 const connectDB = require("./config/db");
 
 const app = express();
@@ -25,6 +26,7 @@ app.get("/api/test", (req, res) => {
     "status" : "running"
   });
 });
+app.use("/api/upload", uploadRoutes);
 
 const startServer = async () => {
   try {
