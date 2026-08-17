@@ -16,8 +16,10 @@ const controlUpload = (req, res) => {
         fs.createReadStream(req.file.path)
             .pipe(csv())
             .on("data", (row) => {
-                transactions.push(row);
-            })
+                if (row.date && row.description && row.category && row.type && row.amount) {
+                    transactions.push(row);
+                }
+                })
             .on("end", async () => {
                 try {
                     const transactionData = transactions.map((row) => ({
@@ -28,9 +30,13 @@ const controlUpload = (req, res) => {
                         type: row.type,
                         amount: Number(row.amount),
                     }));
-
                     const savedTransactions =
                         await Transaction.insertMany(transactionData);
+                    fs.unlink(req.file.path, (error) => {
+                        if (error) {
+                            console.error("Failed to delete uploaded file:", error);
+                        }
+                    });
 
                     return res.status(200).json({
                         success: true,
