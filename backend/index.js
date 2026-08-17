@@ -1,12 +1,11 @@
 const express = require("express");
 const cors = require("cors");
 require("dotenv").config();
-console.log("MONGO_URI =", process.env.MONGO_URI);
 const authRoutes = require("./routes/authRoutes");
-const uploadRoutes = require("./routes/uploadRoutes");
 const connectDB = require("./config/db");
-
 const app = express();
+const transactionRoutes = require("./routes/transactionRoutes");
+const uploadRoutes = require("./routes/uploadRoutes");
 
 app.use(
   cors({
@@ -16,6 +15,8 @@ app.use(
 app.use(express.json());
 
 app.use("/api/auth", authRoutes);
+app.use("/api", transactionRoutes);
+app.use("/api/upload", uploadRoutes);
 
 const PORT = process.env.PORT || 5000;
 
@@ -26,7 +27,6 @@ app.get("/api/test", (req, res) => {
     "status" : "running"
   });
 });
-app.use("/api/upload", uploadRoutes);
 
 const startServer = async () => {
   try {
