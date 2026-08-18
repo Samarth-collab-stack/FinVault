@@ -72,4 +72,4 @@ const controlUpload = (req, res) => {
 
 module.exports = {
     controlUpload,
-};
+}; 
