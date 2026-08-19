@@ -104,8 +104,9 @@ function Dashboard() {
   }
   const filteredTransactions = transactions.filter((transaction) => {
     const matchesSearch = transaction.description
+      .trim()
       .toLowerCase()
-      .includes(search.toLowerCase());
+      .includes(search.trim().toLowerCase());
     const matchesType =
       typeFilter === "all" ||
       transaction.type === typeFilter;
