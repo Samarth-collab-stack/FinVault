@@ -9,6 +9,9 @@ function Dashboard() {
   const [typeFilter, setTypeFilter] = useState("all");
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [editingId, setEditingId] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error,setError] = useState(null);
+  const recentTransactions = [...transactions].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 5);
   const [editForm, setEditForm] = useState({
     description: "",
     category: "",
@@ -43,7 +46,10 @@ function Dashboard() {
         setTransactions(response.data.transactions);
       }
       catch (error) {
-        console.error("failed to fetch transactions: ", error);
+        setError("Failed to Fetch Transactions");
+      }
+      finally {
+        setLoading(false);
       }
     };
     fetchTransactions();
@@ -123,176 +129,219 @@ function Dashboard() {
   const balance = totalIncome - totalExpense;
   return (
     <div className="p-10">
-      <h1 className="text-3xl font-bold">
-        Welcome to FinVault Dashboard
-      </h1>
-      <div className="mt-8">
-        <input
-          type="text"
-          placeholder="Search Transactions..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="border p-2 rounded w-full md: w-1/2"
-        />
-      </div>
-      <select
-        value={categoryFilter}
-        onChange={(e) => setCategoryFilter(e.target.value)}
-        className="border p-2 rounded ml-2"
-      >
-        <option value="all">All Categories</option>
-        <option value="career">career</option>
-        <option value="food">food</option>
-        <option value="shopping">shopping</option>
-        <option value="transport">transport</option>
-      </select>
-      <select
-        value={typeFilter}
-        onChange={(e) => setTypeFilter(e.target.value)}
-        className="border p-2 rounded ml-2"
-      >
-        <option value="all">All</option>
-        <option value="credit">Credit</option>
-        <option value="debit">Debit</option>
-      </select>
-      <div className="mt-8 overflow-x-auto">
-        <table className="w-full border-collapse">
-          <thead>
-            <tr className="border-b">
-              <th className="test-left p-3">Date</th>
-              <th className="test-left p-3">Description</th>
-              <th className="test-left p-3">Catecory</th>
-              <th className="test-left p-3">Type</th>
-              <th className="test-left p-3">Amount</th>
-              <th className="text-left p-3">Action</th>
-            </tr>
-          </thead>
+      {loading ? (
+        <p>Loading Transactions...</p>
+      ) : error ? (
+        <p>{error}</p>
+      ):(
+        <>
+          {transactions.length === 0 ? (
+            <div>
+              <p> No Transactions Yet</p>
+              <p> Upload A CSV to get started</p>
+            </div>
+          ) : (
+            <>
+              {/* HEADER */}
+              <div>
+                <h1 className="text-3xl font-bold">
+                  Welcome to FinVault Dashboard
+                </h1>
+                <p className="mt-2 text-gray-600">
+                  Track your Income...
+                </p>
+              </div>
+              {/* Financial Summary*/}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
 
-          <tbody>
-            {filteredTransactions.map((transaction) => (
-              editingId === transaction._id ? (<tr key={transaction._id} className="border-b">
-                <td className="p-3">{transaction.date}</td>
+                <div className="p-6 bg-green-100 rounded-lg">
+                  <h2 className="text-lg font-semibold">Total Income</h2>
+                  <p className="text-2xl font-bold">₹{totalIncome}</p>
+                  <p>Money Coming In</p>
+                </div>
 
-                <td className="p-3">
-                  <input
-                    type="text"
-                    value={editForm.description}
-                    onChange={(e) =>
-                      setEditForm({
-                        ...editForm,
-                        description: e.target.value,
-                      })
-                    }
-                    className="border p-2 rounded"
-                  />
-                </td>
+                <div className="p-6 bg-red-100 rounded-lg">
+                  <h2 className="text-lg font-semibold">Total Expense</h2>
+                  <p className="text-2xl font-bold">₹{totalExpense}</p>
+                  <p>Money Going Out</p>
+                </div>
 
-                <td className="p-3">
-                  <input
-                    type="text"
-                    value={editForm.category}
-                    onChange={(e) =>
-                      setEditForm({
-                        ...editForm,
-                        category: e.target.value,
-                      })
-                    }
-                    className="border p-2 rounded"
-                  />
-                </td>
+                <div className="p-6 bg-blue-100 rounded-lg">
+                  <h2 className="text-lg font-semibold">Balance</h2>
+                  <p className="text-2xl font-bold">₹{balance}</p>
+                  <p>Current Net Balance</p>
+                </div>
+              </div>
+              {/* Recent Transactions */}
+              <div className="mt-8">
+                <h2>Recent Transactions</h2>
+                {recentTransactions.map(transaction => (
+                  <div key={transaction._id}>
+                    <span>{transaction.description} </span>
+                    <span>{transaction.category} </span>
+                    {transaction.type === "credit" ? '+' : '-'}
+                    <span>{transaction.amount} </span>
+                  </div>
+                ))}
+              </div>
+              {/* All Transactions */}
+              <div className="mt-8">
+                {/* Search */}
+                <input
+                  type="text"
+                  placeholder="Search Transactions..."
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  className="border p-2 rounded w-full md: w-1/2"
+                />
+                {/* Category */}
+                <select
+                  value={categoryFilter}
+                  onChange={(e) => setCategoryFilter(e.target.value)}
+                  className="border p-2 rounded ml-2"
+                >
+                  <option value="all">All Categories</option>
+                  <option value="career">career</option>
+                  <option value="food">food</option>
+                  <option value="shopping">shopping</option>
+                  <option value="transport">transport</option>
+                </select>
+                {/*Type*/}
+                <select
+                  value={typeFilter}
+                  onChange={(e) => setTypeFilter(e.target.value)}
+                  className="border p-2 rounded ml-2"
+                >
+                  <option value="all">All</option>
+                  <option value="credit">Credit</option>
+                  <option value="debit">Debit</option>
+                </select>
+              </div>
+              <div className="mt-8 overflow-x-auto">
+                <table className="w-full border-collapse">
+                  <thead>
+                    <tr className="border-b">
+                      <th className="text-left p-3">Date</th>
+                      <th className="text-left p-3">Description</th>
+                      <th className="text-left p-3">Category</th>
+                      <th className="text-left p-3">Type</th>
+                      <th className="text-left p-3">Amount</th>
+                      <th className="text-left p-3">Action</th>
+                    </tr>
+                  </thead>
 
-                <td className="p-3">
-                  <select
-                    value={editForm.type}
-                    onChange={(e) =>
-                      setEditForm({
-                        ...editForm,
-                        type: e.target.value,
-                      })
-                    }
-                    className="border p-2 rounded"
-                  >
-                    <option value="credit">Credit</option>
-                    <option value="debit">Debit</option>
-                  </select>
-                </td>
+                  <tbody>
+                    {filteredTransactions.map((transaction) => (
+                      editingId === transaction._id ? (<tr key={transaction._id} className="border-b">
+                        <td className="p-3">{transaction.date}</td>
 
-                <td className="p-3">
-                  <input
-                    type="number"
-                    value={editForm.amount}
-                    onChange={(e) =>
-                      setEditForm({
-                        ...editForm,
-                        amount: e.target.value,
-                      })
-                    }
-                    className="border p-2 rounded"
-                  />
-                </td>
+                        <td className="p-3">
+                          <input
+                            type="text"
+                            value={editForm.description}
+                            onChange={(e) =>
+                              setEditForm({
+                                ...editForm,
+                                description: e.target.value,
+                              })
+                            }
+                            className="border p-2 rounded"
+                          />
+                        </td>
 
-                <td className="p-3">
-                  <button
-                    onClick={() => handleUpdate(editingId)}
-                    className="bg-green-500 text-white px-3 py-1 rounded"
-                  >
-                    Save
-                  </button>
-                </td>
+                        <td className="p-3">
+                          <input
+                            type="text"
+                            value={editForm.category}
+                            onChange={(e) =>
+                              setEditForm({
+                                ...editForm,
+                                category: e.target.value,
+                              })
+                            }
+                            className="border p-2 rounded"
+                          />
+                        </td>
 
-                <td className="p-3">
-                  <button
-                    onClick={() => setEditingId(null)}
-                    className="bg-gray-500 text-white px-3 py-1 rounded"
-                  >
-                    Cancel
-                  </button>
-                </td>
-              </tr>) : (<tr key={transaction._id} className="border-b">
-                <td className="p-3">{transaction.date}</td>
-                <td className="p-3">{transaction.description}</td>
-                <td className="p-3">{transaction.category}</td>
-                <td className="p-3">{transaction.type}</td>
-                <td className="p-3">₹{transaction.amount}</td>
-                <td><button onClick={() => handleDelete(transaction._id)} className="bg-red-500 text-white px-3 py-1 rounded">
-                  Delete
-                </button>
-                </td>
-                <td>
-                  <button onClick={() => setEditingId(transaction._id)} className="bg-red-500 text-white px-3 py-1 rounded">
-                    Update
-                  </button>
-                </td>
-              </tr>)
-            ))}
-          </tbody>
-        </table>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+                        <td className="p-3">
+                          <select
+                            value={editForm.type}
+                            onChange={(e) =>
+                              setEditForm({
+                                ...editForm,
+                                type: e.target.value,
+                              })
+                            }
+                            className="border p-2 rounded"
+                          >
+                            <option value="credit">Credit</option>
+                            <option value="debit">Debit</option>
+                          </select>
+                        </td>
 
-          <div className="p-6 bg-green-100 rounded-lg">
-            <h2 className="text-lg font-semibold">Total Income</h2>
-            <p className="text-2xl font-bold">₹{totalIncome}</p>
-          </div>
+                        <td className="p-3">
+                          <input
+                            type="number"
+                            value={editForm.amount}
+                            onChange={(e) =>
+                              setEditForm({
+                                ...editForm,
+                                amount: e.target.value,
+                              })
+                            }
+                            className="border p-2 rounded"
+                          />
+                        </td>
 
-          <div className="p-6 bg-red-100 rounded-lg">
-            <h2 className="text-lg font-semibold">Total Expense</h2>
-            <p className="text-2xl font-bold">₹{totalExpense}</p>
-          </div>
+                        <td className="p-3">
+                          <button
+                            onClick={() => handleUpdate(editingId)}
+                            className="bg-green-500 text-white px-3 py-1 rounded"
+                          >
+                            Save
+                          </button>
+                        </td>
 
-          <div className="p-6 bg-blue-100 rounded-lg">
-            <h2 className="text-lg font-semibold">Balance</h2>
-            <p className="text-2xl font-bold">₹{balance}</p>
-          </div>
+                        <td className="p-3">
+                          <button
+                            onClick={() => setEditingId(null)}
+                            className="bg-gray-500 text-white px-3 py-1 rounded"
+                          >
+                            Cancel
+                          </button>
+                        </td>
+                      </tr>) : (<tr key={transaction._id} className="border-b">
+                        <td className="p-3">{transaction.date}</td>
+                        <td className="p-3">{transaction.description}</td>
+                        <td className="p-3">{transaction.category}</td>
+                        <td className="p-3">{transaction.type}</td>
+                        <td className="p-3">₹{transaction.amount}</td>
+                        <td><button onClick={() => handleDelete(transaction._id)} className="bg-red-500 text-white px-3 py-1 rounded">
+                          Delete
+                        </button>
+                        </td>
+                        <td>
+                          <button onClick={() => setEditingId(transaction._id)} className="bg-red-500 text-white px-3 py-1 rounded">
+                            Update
+                          </button>
+                        </td>
+                      </tr>)
+                    ))}
+                  </tbody>
+                </table>
+              </div>
 
-        </div>
-      </div>
-
-      <button
-        onClick={handleLogout}
-        className="mt-6 bg-red-500 text-white px-4 py-2 rounded"
-      >
-        Logout
-      </button>
+              <button
+                onClick={handleLogout}
+                className="mt-6 bg-red-500 text-white px-4 py-2 rounded"
+              >
+                Logout
+              </button>
+            </>
+          )
+          }
+        </>
+      )}
     </div >
   );
 }
