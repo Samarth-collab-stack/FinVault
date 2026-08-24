@@ -5,6 +5,7 @@ import Upload from './pages/Upload';
 import NotFound from './pages/NotFound';
 import Dashboard from './pages/Dashboard';
 import ProtectedRoute from "./components/ProtectedRoute";
+import Layout from "./components/Layout";
 
 function App() {
   return (
@@ -17,7 +18,9 @@ function App() {
           path="/dashboard"
           element={
             <ProtectedRoute>
-              <Dashboard />
+              <Layout>
+                  <Dashboard />
+              </Layout>
             </ProtectedRoute>
           }
         />
@@ -26,6 +29,9 @@ function App() {
           path="/upload"
           element={
             <ProtectedRoute>
+              <Layout>
+                  <Upload />
+              </Layout>
               <Upload />
             </ProtectedRoute>
           }

@@ -203,7 +203,7 @@ function Dashboard() {
                   ):(
                     <p>No expense data available yet</p>
                   )}
-                </div>
+                </div> 
                 <div>
                   {spendingInsightAbove50
                     ? (<p>Your {highestExpenseCategory.category} expenses are very high.
