@@ -290,7 +290,7 @@ function Dashboard() {
                   placeholder="Search Transactions..."
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  className="border p-2 rounded w-full md: w-1/2"
+                  className="border p-2 rounded md: w-1/2"
                 />
                 {/* Category */}
                 <select
