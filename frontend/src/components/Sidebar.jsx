@@ -29,26 +29,15 @@ function Sidebar() {
         <div className="space-y-1">
           <NavLink
             to="/dashboard"
-            className={({ isActive }) =>
-              `block rounded-md px-3 py-2.5 text-sm font-medium transition-colors ${
-                isActive
-                  ? "bg-emerald-50 text-emerald-700"
-                  : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
-              }`
-            }
+            className="block rounded-md px-3 py-2.5 text-sm font-medium text-slate-600 transition-colors hover:bg-emerald-50 hover:text-emerald-700"
+            
           >
             Dashboard
           </NavLink>
 
           <NavLink
             to="/upload"
-            className={({ isActive }) =>
-              `block rounded-md px-3 py-2.5 text-sm font-medium transition-colors ${
-                isActive
-                  ? "bg-emerald-50 text-emerald-700"
-                  : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
-              }`
-            }
+            className="block rounded-md px-3 py-2.5 text-sm font-medium text-slate-600 transition-colors hover:bg-emerald-50 hover:text-emerald-700"
           >
             Upload Transactions
           </NavLink>
