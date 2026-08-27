@@ -2,45 +2,6 @@ import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
 
-function VaultMark() {
-  return (
-    <svg
-      width="34"
-      height="34"
-      viewBox="0 0 34 34"
-      fill="none"
-      className="shrink-0"
-      aria-hidden="true"
-    >
-      <circle
-        cx="17"
-        cy="17"
-        r="16"
-        stroke="#B8925A"
-        strokeWidth="1.2"
-      />
-      <circle
-        cx="17"
-        cy="17"
-        r="11.5"
-        stroke="#B8925A"
-        strokeWidth="1"
-        opacity="0.5"
-      />
-      <circle cx="17" cy="17" r="3.2" fill="#B8925A" />
-      <rect
-        x="16.3"
-        y="16.4"
-        width="1.4"
-        height="7"
-        rx="0.7"
-        fill="#B8925A"
-        transform="rotate(35 17 17)"
-      />
-    </svg>
-  );
-}
-
 function StatusDot({ tone }) {
   const color =
     tone === "healthy"
@@ -64,7 +25,7 @@ function Dashboard() {
   const username = localStorage.getItem("username");
   const hour = new Date().getHours();
   let greeting;
-  if (hour < 5 ){
+  if (hour < 5) {
     greeting = "Burning the Midnight Oil?";
   }
   else if (hour < 12 && hour > 5) {
@@ -155,7 +116,76 @@ function Dashboard() {
       : spendingLevel === "healthy"
         ? "lowSpendingLevel"
         : "moderateSpendingLevel";
+  // Financial Health Score (1–100)
+  const expenseRatioScore =
+    expenseRatio <= 30
+      ? 50
+      : expenseRatio <= 50
+        ? 40
+        : expenseRatio <= 70
+          ? 30
+          : expenseRatio <= 80
+            ? 20
+            : expenseRatio <= 100
+              ? 10
+              : 0;
 
+  const balanceScore =
+    totalIncome > totalExpense
+      ? 30
+      : totalIncome === totalExpense
+        ? 15
+        : 0;
+
+  const highestExpensePercentage =
+    highestExpenseCategory?.percentage ?? 0;
+
+  const concentrationScore =
+    highestExpensePercentage <= 30
+      ? 20
+      : highestExpensePercentage <= 40
+        ? 16
+        : highestExpensePercentage <= 50
+          ? 12
+          : highestExpensePercentage <= 60
+            ? 8
+            : highestExpensePercentage <= 70
+              ? 4
+              : 0;
+
+  const financialHealthScore =
+    totalIncome === 0
+      ? 0
+      : Math.max(
+        1,
+        Math.min(
+          100,
+          expenseRatioScore +
+          balanceScore +
+          concentrationScore
+        )
+      );
+
+  const financialHealthLabel =
+    financialHealthScore >= 80
+      ? "Healthy"
+      : financialHealthScore >= 60
+        ? "Moderate"
+        : financialHealthScore >= 40
+          ? "Needs attention"
+          : "At risk";
+  const financialHealthMessage =
+    financialHealthScore >= 80
+      ? highestExpensePercentage > 50
+        ? `Your spending is well within your income. However, a large share of your expenses is concentrated in ${highestExpenseCategory.category}.`
+        : "Your spending is well within your income and remains broadly balanced."
+      : financialHealthScore >= 60
+        ? expenseRatio > 70
+          ? "Your expenses are taking up a significant portion of your income. Consider reviewing your largest spending categories."
+          : "Your finances are in a moderate range. Keeping your expenses under control can improve your overall position."
+        : financialHealthScore >= 40
+          ? "Your expenses are putting pressure on your income. Reviewing recurring and high-value spending could help improve your position."
+          : "Your expenses currently exceed a comfortable level relative to your income. Consider reducing non-essential spending.";
   useEffect(() => {
     if (selectedTransaction) {
       setEditForm({
@@ -274,7 +304,11 @@ function Dashboard() {
       <div className="min-h-screen bg-[#F5F3EE] flex items-center justify-center px-6">
         <div className="text-center">
           <div className="flex justify-center mb-4">
-            <VaultMark />
+            <img
+              src="/FinVault-logo.png"
+              alt="FinVault"
+              className="h-8 w-auto"
+            />
           </div>
 
           <p className="text-xs font-medium uppercase tracking-[0.18em] text-[#171B22]/50">
@@ -345,8 +379,12 @@ function Dashboard() {
 
         {transactions.length === 0 ? (
           <div className="mt-10 border border-dashed border-[#D8D5CC] bg-white px-6 py-16 text-center">
-            <div className="flex justify-center">
-              <VaultMark />
+            <div className="mb-8 flex justify-center">
+              <img
+                src="/FinVault-logo.png"
+                alt="FinVault"
+                className="h-15 w-auto"
+              />
             </div>
 
             <h2 className="mt-5 text-xl font-semibold text-[#171B22]">
@@ -415,20 +453,20 @@ function Dashboard() {
 
                     <span
                       className={`h-2 w-2 rounded-full ${balance > 0
-                          ? "bg-[#1F6F54]"
-                          : balance < 0
-                            ? "bg-[#B23B3B]"
-                            : "bg-[#B8925A]"
+                        ? "bg-[#1F6F54]"
+                        : balance < 0
+                          ? "bg-[#B23B3B]"
+                          : "bg-[#B8925A]"
                         }`}
                     />
                   </div>
 
                   <p
                     className={`mt-5 font-sans text-3xl font-medium tabular-nums tracking-tight ${balance > 0
-                        ? "text-[#1F6F54]"
-                        : balance < 0
-                          ? "text-[#B23B3B]"
-                          : "text-[#171B22]"
+                      ? "text-[#1F6F54]"
+                      : balance < 0
+                        ? "text-[#B23B3B]"
+                        : "text-[#171B22]"
                       }`}
                   >
                     ₹{balance.toLocaleString("en-IN")}
@@ -442,17 +480,17 @@ function Dashboard() {
             {/* ============================================================= */}
 
             <section className="mt-10">
-              <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+              <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
 
                 {/* Financial Health */}
                 <div className="border border-[#E4E1D8] bg-white p-6">
                   <div className="flex items-center justify-between border-b border-[#E4E1D8] pb-4">
                     <div>
                       <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#171B22]/45">
-                        Financial health
+                        How Much Of Income Are you spending?
                       </p>
 
-                      <p className="mt-1 text-sm text-[#171B22]/50">
+                      <p className="mt-1 text-sm text-[#17]/50">
                         Based on income and expense levels.
                       </p>
                     </div>
@@ -507,10 +545,10 @@ function Dashboard() {
                       <div className="mt-3 h-2 w-full overflow-hidden bg-[#F0EEE8]">
                         <div
                           className={`h-full ${expenseRatio >= 80
-                              ? "bg-[#d6471c]"
-                              : expenseRatio > 50
-                                ? "bg-[#77abe6]"
-                                : "bg-[#3eab38]"
+                            ? "bg-[#d6471c]"
+                            : expenseRatio > 50
+                              ? "bg-[#77abe6]"
+                              : "bg-[#3eab38]"
                             }`}
                           style={{
                             width: `${Math.min(expenseRatio, 100)}%`,
@@ -564,8 +602,8 @@ function Dashboard() {
                         <div className="mt-5 h-2 w-full bg-[#F0EEE8]">
                           <div
                             className={`h-full ${highestExpenseCategory.percentage > 50
-                                ? "bg-[#d6471c]"
-                                : "bg-[#e8db66]"
+                              ? "bg-[#d6471c]"
+                              : "bg-[#e8db66]"
                               }`}
                             style={{
                               width: `${Math.min(
@@ -592,6 +630,61 @@ function Dashboard() {
                       </p>
                     )}
                   </div>
+                </div>
+                {/* Financial Health Score */}
+                <div className="border border-[#E4E1D8] bg-white p-6">
+                  <div className="flex items-start justify-between">
+                    <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#171B22]/45">
+                      Financial health score
+                    </p>
+
+                    <span
+                      className={`h-2 w-2 rounded-full ${financialHealthScore >= 80
+                        ? "bg-[#1F6F54]"
+                        : financialHealthScore >= 60
+                          ? "bg-[#91cdff]"
+                          : "bg-[#B23B3B]"
+                        }`}
+                    />
+                  </div>
+
+                  <div className="mt-5 flex items-baseline">
+                    <p
+                      className={`font-sans text-3xl font-medium tabular-nums tracking-tight ${financialHealthScore >= 80
+                        ? "text-[#1F6F54]"
+                        : financialHealthScore >= 60
+                          ? "text-[#96c7ff]"
+                          : "text-[#B23B3B]"
+                        }`}
+                    >
+                      {financialHealthScore}
+                    </p>
+
+                    <span className="ml-1 text-sm text-[#171B22]/40">
+                      / 100
+                    </span>
+                  </div>
+
+                  <p className="mt-2 text-sm font-medium text-[#171B22]/70">
+                    {financialHealthLabel}
+                  </p>
+
+                  <div className="mt-4 h-1.5 w-full bg-[#F0EEE8]">
+                    <div
+                      className={`h-full ${financialHealthScore >= 80
+                        ? "bg-[#1F6F54]"
+                        : financialHealthScore >= 60
+                          ? "bg-[#77abe6]"
+                          : "bg-[#B23B3B]"
+                        }`}
+                      style={{
+                        width: `${financialHealthScore}%`,
+                      }}
+                    />
+                  </div>
+                  <p className="mt-4 text-sm leading-6 text-[#171B22]/60">
+                    {financialHealthMessage}
+                  </p>
                 </div>
               </div>
             </section>
@@ -705,16 +798,16 @@ function Dashboard() {
                           className="w-full bg-[#3eab38]"
                           style={{
                             height: `${Math.max(totalIncome, totalExpense) > 0
-                                ? Math.max(
-                                  (totalIncome /
-                                    Math.max(
-                                      totalIncome,
-                                      totalExpense
-                                    )) *
-                                  100,
-                                  4
-                                )
-                                : 0
+                              ? Math.max(
+                                (totalIncome /
+                                  Math.max(
+                                    totalIncome,
+                                    totalExpense
+                                  )) *
+                                100,
+                                4
+                              )
+                              : 0
                               }%`,
                           }}
                         />
@@ -736,16 +829,16 @@ function Dashboard() {
                           className="w-full bg-[#d6471c]"
                           style={{
                             height: `${Math.max(totalIncome, totalExpense) > 0
-                                ? Math.max(
-                                  (totalExpense /
-                                    Math.max(
-                                      totalIncome,
-                                      totalExpense
-                                    )) *
-                                  100,
-                                  4
-                                )
-                                : 0
+                              ? Math.max(
+                                (totalExpense /
+                                  Math.max(
+                                    totalIncome,
+                                    totalExpense
+                                  )) *
+                                100,
+                                4
+                              )
+                              : 0
                               }%`,
                           }}
                         />
@@ -786,8 +879,8 @@ function Dashboard() {
                     <div className="flex min-w-0 items-center gap-3">
                       <span
                         className={`h-2 w-2 shrink-0 rounded-full ${transaction.type === "credit"
-                            ? "bg-[#1F6F54]"
-                            : "bg-[#B23B3B]"
+                          ? "bg-[#1F6F54]"
+                          : "bg-[#B23B3B]"
                           }`}
                       />
 
@@ -804,8 +897,8 @@ function Dashboard() {
 
                     <span
                       className={`font-sans text-sm font-medium tabular-nums ${transaction.type === "credit"
-                          ? "text-[#1F6F54]"
-                          : "text-[#B23B3B]"
+                        ? "text-[#1F6F54]"
+                        : "text-[#B23B3B]"
                         }`}
                     >
                       {transaction.type === "credit" ? "+" : "−"}₹
@@ -1064,8 +1157,8 @@ function Dashboard() {
                             <td className="px-5 py-4">
                               <span
                                 className={`text-xs font-medium capitalize ${transaction.type === "credit"
-                                    ? "text-[#1F6F54]"
-                                    : "text-[#B23B3B]"
+                                  ? "text-[#1F6F54]"
+                                  : "text-[#B23B3B]"
                                   }`}
                               >
                                 {transaction.type}
@@ -1074,8 +1167,8 @@ function Dashboard() {
 
                             <td
                               className={`px-5 py-4 text-right font-sans tabular-nums ${transaction.type === "credit"
-                                  ? "text-[#1F6F54]"
-                                  : "text-[#B23B3B]"
+                                ? "text-[#1F6F54]"
+                                : "text-[#B23B3B]"
                                 }`}
                             >
                               {transaction.type === "credit"

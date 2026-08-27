@@ -105,13 +105,17 @@ function Login() {
 
           {/* Brand */}
           <div className="mb-8 flex justify-center">
-            <VaultMark />
+            <img
+              src="/FinVault-logo.png"
+              alt="FinVault"
+              className="h-20 w-auto"
+            />
           </div>
 
           {/* Header */}
           <div className="border-b border-[#E4E1D8] pb-7 text-center">
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#171B22]/45">
-              FinVault
+              FinVault-Know where you stand.
             </p>
 
             <h1 className="mt-3 text-3xl font-semibold tracking-tight text-[#171B22] sm:text-4xl">

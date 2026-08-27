@@ -1,77 +1,12 @@
 import { useState } from "react";
 import axios from "axios";
 
-function VaultMark() {
-    return (
-        <svg
-            width="34"
-            height="34"
-            viewBox="0 0 34 34"
-            fill="none"
-            className="shrink-0"
-            aria-hidden="true"
-        >
-            <circle
-                cx="17"
-                cy="17"
-                r="16"
-                stroke="#B8925A"
-                strokeWidth="1.2"
-            />
-            <circle
-                cx="17"
-                cy="17"
-                r="11.5"
-                stroke="#B8925A"
-                strokeWidth="1"
-                opacity="0.5"
-            />
-            <circle
-                cx="17"
-                cy="17"
-                r="3.2"
-                fill="#B8925A"
-            />
-            <rect
-                x="16.3"
-                y="16.4"
-                width="1.4"
-                height="7"
-                rx="0.7"
-                fill="#B8925A"
-                transform="rotate(35 17 17)"
-            />
-        </svg>
-    );
-}
-
 function Upload() {
     const [file, setFile] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
     const hours = new Date().getHours();
-    let greeting;
-    switch (true) {
-        case hours >= 1 && hours < 5:
-            greeting = "Burning the Midnight Oil?";
-            break;
-
-        case hours >= 5 && hours < 12:
-            greeting = "Good Morning...";
-            break;
-
-        case hours >= 12 && hours < 16:
-            greeting = "Good Afternoon...";
-            break;
-
-        case hours >= 16 && hours < 21:
-            greeting = "Good Evening...";
-            break;
-
-        default:
-            greeting = "Time to Wind Down...";
-    }
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -124,7 +59,7 @@ function Upload() {
                     <div className="flex items-start gap-4">
                         <div>
                             <h1 className="text-3xl font-semibold tracking-tight text-[#171B22] sm:text-4xl">
-                                {greeting}Import transactions
+                              Import transactions
                             </h1>
 
                             <p className="mt-2 max-w-xl text-sm leading-6 text-[#171B22]/60">
@@ -258,7 +193,12 @@ function Upload() {
                         <div className="border border-[#E4E1D8] bg-white p-6 sm:p-8">
 
                             <div className="flex items-start gap-4 border-b border-[#E4E1D8] pb-5">
-                                <VaultMark />
+                                {/* Brand */}
+                                <img
+                                    src="/FinVault-logo.png"
+                                    alt="FinVault"
+                                    className="h-10 w-auto"
+                                />
 
                                 <div>
                                     <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#171B22]/45">

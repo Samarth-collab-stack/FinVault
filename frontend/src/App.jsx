@@ -19,7 +19,7 @@ function App() {
           element={
             <ProtectedRoute>
               <Layout>
-                  <Dashboard />
+                <Dashboard />
               </Layout>
             </ProtectedRoute>
           }
@@ -30,9 +30,8 @@ function App() {
           element={
             <ProtectedRoute>
               <Layout>
-                  <Upload />
+                <Upload />
               </Layout>
-              <Upload />
             </ProtectedRoute>
           }
         />
