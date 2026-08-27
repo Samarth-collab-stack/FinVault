@@ -982,7 +982,7 @@ function Dashboard() {
 
               {/* Table */}
               <div className="overflow-x-auto border border-[#E4E1D8] bg-white">
-                <table className="w-full min-w-[850px] border-collapse text-sm">
+                <table className="w-full min-w-212.5 border-collapse text-sm">
                   <thead>
                     <tr className="border-b border-[#E4E1D8] bg-[#FAF9F6]">
                       <th className="px-5 py-4 text-left text-[10px] font-semibold uppercase tracking-[0.14em] text-[#171B22]/45">
