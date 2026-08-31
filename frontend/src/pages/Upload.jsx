@@ -11,7 +11,7 @@ function Upload() {
         e.preventDefault();
 
         if (!file) {
-            setError("Please enter a valid csv file");
+            setError("Please select a valid PDF bank statement");
             return;
         }
 
@@ -59,11 +59,11 @@ function Upload() {
                     <div className="flex items-start gap-4">
                         <div>
                             <h1 className="text-3xl font-semibold tracking-tight text-[#171B22] sm:text-4xl">
-                              Import transactions
+                                Import transactions
                             </h1>
 
                             <p className="mt-2 max-w-xl text-sm leading-6 text-[#171B22]/60">
-                                Upload a CSV file to add your transaction history
+                                Upload a bank statement PDF to add your transaction history
                                 to FinVault.
                             </p>
                         </div>
@@ -83,7 +83,7 @@ function Upload() {
                                 </p>
 
                                 <p className="mt-1 text-sm text-[#171B22]/50">
-                                    Select a CSV file containing your transactions.
+                                    Select a PDF bank statement containing your transactions.
                                 </p>
                             </div>
 
@@ -113,13 +113,13 @@ function Upload() {
                                     <p className="mt-5 text-sm font-medium text-[#171B22]">
                                         {file
                                             ? file.name
-                                            : "Select a CSV file"}
+                                            : "Select a PDF file"}
                                     </p>
 
                                     <p className="mt-2 text-xs text-[#171B22]/45">
                                         {file
                                             ? "File selected and ready to upload"
-                                            : "CSV files only"}
+                                            : "PDF files only"}
                                     </p>
 
                                     <span className="mt-5 inline-block border border-[#D8D5CC] bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.08em] text-[#171B22]/65 group-hover:border-[#B8925A] group-hover:text-[#B8925A]">
@@ -129,7 +129,7 @@ function Upload() {
                                     <input
                                         id="csv-upload"
                                         type="file"
-                                        accept=".csv"
+                                        accept=".pdf"
                                         onChange={(e) => {
                                             setFile(e.target.files[0]);
                                             setError("");
@@ -219,8 +219,8 @@ function Upload() {
                                     </p>
 
                                     <p className="mt-2 text-sm leading-6 text-[#171B22]/65">
-                                        Upload your transaction history as a
-                                        comma-separated values file.
+                                        Upload your bank statement as a PDF file.
+                                        FinVault will extract the transaction details automatically.
                                     </p>
                                 </div>
 
@@ -231,11 +231,11 @@ function Upload() {
 
                                     <div className="mt-3 flex items-center justify-between border border-[#E4E1D8] bg-[#FAF9F6] px-4 py-3">
                                         <span className="text-sm font-medium text-[#171B22]">
-                                            CSV
+                                            PDF
                                         </span>
 
                                         <span className="text-xs text-[#171B22]/45">
-                                            .csv
+                                            .pdf
                                         </span>
                                     </div>
                                 </div>
