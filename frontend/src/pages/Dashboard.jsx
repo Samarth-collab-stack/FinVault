@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
-
+const API_URL = import.meta.env.VITE_API_BASE_URL;
 function StatusDot({ tone }) {
   const color =
     tone === "healthy"
@@ -203,7 +203,7 @@ function Dashboard() {
 
       try {
         const response = await axios.get(
-          "http://localhost:5000/api/transactions",
+          `${API_URL}/transactions`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -227,7 +227,7 @@ function Dashboard() {
 
     try {
       const response = await axios.delete(
-        `http://localhost:5000/api/transactions/${id}`,
+        `${API_URL}/transactions/${id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -250,7 +250,7 @@ function Dashboard() {
 
     try {
       const response = await axios.put(
-        `http://localhost:5000/api/transactions/${id}`,
+        `${API_URL}/transactions/${id}`,
         editForm,
         {
           headers: {
